@@ -6,6 +6,12 @@ function Private({ children }) {
 
     const { signed, loading } = useContext(AuthContext)
 
+    if (loading) {
+        return (
+            <div></div>
+        )
+    }
+
     if (!signed) {
         return <Navigate to="/" />
     }
