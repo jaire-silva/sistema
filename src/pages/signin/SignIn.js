@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/auth";
+import { toast } from "react-toastify";
 
 import logo from "../../assets/logo.png"
 
@@ -11,14 +12,14 @@ function SingnIn() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
-    const { signIn } = useContext(AuthContext)
+    const { signIn, loadingAuth } = useContext(AuthContext)
 
-    function handleSingIn(event) {
+    async function handleSingIn(event) {
         event.preventDefault()
         if (email !== "" && password !== "") {
-            signIn(email, password)
+            await signIn(email, password)
         } else {
-            alert("Forneça todos os dados solicitados!!!")
+            toast.info("Forneça todos os dados solicitados!!!")
         }
     }
 
@@ -44,7 +45,9 @@ function SingnIn() {
                         onChange={(e) => setPassword(e.target.value)}
                     />
 
-                    <button type="submit">Acessar</button>
+                    <button type="submit">
+                        {loadingAuth ? "Carregando" : "Acessar"}
+                    </button>
                 </form>
                 <Link to={"/register"} >Criar uma conta</Link>
             </div>
