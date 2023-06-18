@@ -4,7 +4,7 @@ import SingnIn from "../pages/signin/SignIn"
 import SingnUp from "../pages/singup/SignUp"
 import DashBoard from "../pages/dashboard/DashBoard";
 import Private from "./Private";
-import Header from "../components/header/Header";
+import Profile from "../pages/profile/Profile";
 
 function RoutesApp() {
     return (
@@ -13,8 +13,12 @@ function RoutesApp() {
             <Route path="/register" element={<SingnUp />} />
             <Route path="/dashboard" element={
                 <Private>
-                    <Header />
                     <DashBoard />
+                </Private>
+            } />
+            <Route path="/profile" element={
+                <Private>
+                    <Profile/>
                 </Private>
             } />
         </Routes>
