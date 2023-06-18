@@ -1,10 +1,10 @@
-import {
-    FiSettings,
-    FiUpload
-} from "react-icons/fi"
+import { FiSettings, FiUpload } from "react-icons/fi"
 import { AuthContext } from "../../contexts/auth"
 import { useContext, useState } from "react"
 import { toast } from "react-toastify"
+import { doc, updateDoc } from "firebase/firestore"
+import { firebaseDb, firebaseStorage } from "../../services/fibaseConnection"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 
 import Title from "../../components/title/Title"
 import Header from "../../components/header/Header"
@@ -41,6 +41,61 @@ function Profile() {
         }
     }
 
+    async function handleSubmit(event) {
+        event.preventDefault()
+
+        if (imageAvatar === null && name !== null) {
+            const docRef = doc(firebaseDb, "users", user.uid)
+            await updateDoc(docRef, { nome: name })
+                .then(() => {
+                    let data = {
+                        ...user,
+                        name: name
+                    }
+
+                    setUser(data)
+                    storageUser(data)
+                    toast.success("Atualização realizada com sucesso!!!")
+                })
+                .catch((error) => {
+                    console.log(error)
+                    toast.error("Alguma coisa deu errado!!!")
+                })
+        } else if (imageAvatar !== "" && name !== null) {
+            handleUpload()
+        }
+    }
+
+    async function handleUpload() {
+        const correntUid = user.uid
+
+        const uploadRef = ref(firebaseStorage, `images/${correntUid}/${imageAvatar.name}`)
+        const uploadTask = uploadBytes(uploadRef, imageAvatar)
+            .then((snapshot) => {
+                getDownloadURL(snapshot.ref)
+                    .then(async (downloadURL) => {
+                        let urlFoto = downloadURL
+                        const docRef = doc(firebaseDb, "users", user.uid)
+
+                        await updateDoc(docRef, {
+                            avatarUrl: urlFoto,
+                            name: name
+                        })
+                            .then(() => {
+                                let data = {
+                                    ...user,
+                                    name: name,
+                                    avatarUrl: urlFoto
+                                }
+
+                                setUser(data)
+                                storageUser(data)
+                                toast.success("Atualização realizada com sucesso!!!")
+                            })
+                    })
+            })
+    }
+
     return (
         <div>
             <Header />
@@ -50,7 +105,7 @@ function Profile() {
                 </Title>
 
                 <div className="container">
-                    <form className="form-profile">
+                    <form className="form-profile" onSubmit={handleSubmit}>
 
                         <label className="label-avatar">
                             <span>
