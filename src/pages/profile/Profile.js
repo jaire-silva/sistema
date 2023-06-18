@@ -1,3 +1,5 @@
+import { FiSettings } from "react-icons/fi"
+
 import Title from "../../components/title/Title"
 
 import Header from "../../components/header/Header"
@@ -8,7 +10,9 @@ function Profile() {
         <div>
             <Header />
             <div className="content">
-                <Title />
+                <Title name="Minha conta" >
+                    <FiSettings size={25} />
+                </Title>
             </div>
 
         </div>

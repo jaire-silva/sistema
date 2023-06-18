@@ -1,10 +1,11 @@
 
 import "./title.css"
 
-function Title() {
+function Title({ children, name }) {
     return (
         <div className="title">
-            <span>Meu Perfil</span>
+            {children}
+            <span>{name}</span>
         </div>
     )
 }
